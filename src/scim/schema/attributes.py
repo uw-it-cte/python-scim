@@ -65,11 +65,11 @@ class Base(object):
     """
 
     def __init__(self, last=False):
-        #! Instance state of the attribute.
         self._state = {}
+        """Instance state of the attribute."""
 
-        #! Whether to ensure the element is inserted last of not.
         self._last = last
+        """Whether to ensure the element is inserted last of not."""
 
     def serialize(self, obj=None):
         # Serialize the data in the instance state to the representation
@@ -120,20 +120,21 @@ class Base(object):
 class Singular(Base):
 
     def __init__(self, type_, name=None, required=False, *args, **kwargs):
-        #! The underyling type of the attribute.
         self.type = type_
+        """The underyling type of the attribute."""
+
         if isinstance(type_, type):
             # Instantiate the type reference with no parameters.
             self.type = type_()
 
-        #! The name as the attribute is represented in the serialized form.
-        #!
-        #! If left as None; this will be set to the camelCased version of
-        #! the property name.
         self.name = name
+        """The name as the attribute is represented in the serialized form.
 
-        #! Whether this attribute is required.
+        If left as None; this will be set to the camelCased version of
+        the property name."""
+
         self.required = required
+        """Whether this attribute is required."""
 
         # Continue initialization.
         super(Singular, self).__init__(*args, **kwargs)
@@ -176,14 +177,14 @@ class Singular(Base):
 class Complex(Base):
 
     def __init__(self, type_, name=None, *args, **kwargs):
-        #! The underyling type of the attribute.
         self.type = type_
+        """The underyling type of the attribute."""
 
-        #! The name as the attribute is represented in the serialized form.
-        #!
-        #! If left as None; this will be set to the camelCased version of
-        #! the property name.
         self.name = name
+        """The name as the attribute is represented in the serialized form.
+
+        If left as None; this will be set to the camelCased version of
+        the property name."""
 
         # Continue initialization.
         super(Complex, self).__init__(*args, **kwargs)
@@ -247,17 +248,18 @@ class BaseList(collections.MutableSequence):
         # Turn the instance state into states.
         self._states = []
 
-        #! Conversion method.
         self.convert = convert
+        """Conversion method."""
 
-        #! The underyling attribute.
         self.type = type_
+        """The underyling attribute."""
+
         if isinstance(type_, type):
             # Instantiate the type reference with no parameters.
             self.type = type_()
 
-        #! The underyling name of this.
         self.name = name
+        """The underyling name of this."""
 
     def insert(self, index, value):
         self._states.insert(index, self.convert(value))
@@ -284,8 +286,8 @@ class List(Complex):
         # Continue initialization.
         super(List, self).__init__(None, *args, **kwargs)
 
-        #! The underyling type of the attribute.
         self.type = lambda: BaseList(type_, self.name, convert)
+        """The underyling type of the attribute."""
 
     def serialize(self, obj):
         # Grab the data object to serialize.
@@ -328,27 +330,27 @@ class List(Complex):
 
 class BaseMultiValue(Base):
 
-    #! A label indicating the attribute's function; e.g., "work" or "home".
     type = Singular(String)
+    """A label indicating the attribute's function; e.g., "work" or "home"."""
 
-    #! A Boolean value indicating the 'primary' or preferred attribute value
-    #! for this attribute, e.g. the preferred mailing address or
-    #! primary e-mail address. The primary attribute value 'true' MUST
-    #! appear no more than once.
     primary = Singular(Boolean)
+    """A Boolean value indicating the 'primary' or preferred attribute value
+    for this attribute, e.g. the preferred mailing address or
+    primary e-mail address. The primary attribute value 'true' MUST
+    appear no more than once."""
 
-    #! A human readable name, primarily used for display purposes.
     display = Singular(String)
+    """A human readable name, primarily used for display purposes."""
 
-    #! The operation to perform on the multi-valued attribute during
-    #! a PATCH request. The only valid value is "delete", which
-    #! signifies that this instance should be removed from the Resource.
     operation = Singular(String)
+    """The operation to perform on the multi-valued attribute during
+    a PATCH request. The only valid value is "delete", which
+    signifies that this instance should be removed from the Resource."""
 
-    #! The attribute's significant value; e.g., the e-mail address,
-    #! phone number, etc. Attributes that define a "value" sub-attribute
-    #! MAY be alternately represented as a collection of primitive types.
     value = None
+    """The attribute's significant value; e.g., the e-mail address,
+    phone number, etc. Attributes that define a "value" sub-attribute
+    MAY be alternately represented as a collection of primitive types."""
 
     def serialize(self):
         # Serialize the data in the instance state to the representation
@@ -374,12 +376,13 @@ class MultiValue(List):
         return value
 
     def __init__(self, type_=Singular(String), *args, **kwargs):
-        #! The type of the value attring.
         self.attribute = type_ = type(
             'Value', (BaseMultiValue,), {'value': type_})
+        """The type of the value attring."""
 
         # Continue initialization.
-        super(MultiValue, self).__init__(type_, convert=self._convert, *args, **kwargs)
+        super(MultiValue, self).__init__(
+            type_, convert=self._convert, *args, **kwargs)
 
     def serialize(self, obj):
         # Grab the data object to serialize.

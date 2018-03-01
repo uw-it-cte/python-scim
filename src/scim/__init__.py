@@ -6,8 +6,8 @@
     - http://www.simplecloud.info/specs/draft-scim-api-01.html
 """
 
-#! Version of the package.
 __version__ = VERSION = "0.2.1"
+"""Version of the package."""
 
-#! Version of the SCIM standard supported.
 SCIM_VERSION = "1.1"
+"""Version of the SCIM standard supported."""
