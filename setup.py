@@ -9,7 +9,7 @@ BASE_DIR = path.abspath(path.dirname(__file__))
 
 # Navigate, import, and retrieve the version of the project.
 VERSION = get_importer(path.join(BASE_DIR, 'src')).find_module(
-    'scim').load_module().__version__
+    'scim').load_module('scim').__version__
 
 setup(
     name='scim',
