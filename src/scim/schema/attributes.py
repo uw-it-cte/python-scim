@@ -2,6 +2,8 @@
 import collections
 import json
 import re
+import six
+
 from .types import Boolean, String
 
 
@@ -55,7 +57,8 @@ class Declarative(type):
         return super().__new__(cls, name, bases, attrs)
 
 
-class Base(metaclass=Declarative):
+@six.add_metaclass(Declarative)
+class Base():
     """
     Represents an attribute wrapper; intended to tie a name, constraints,
     and behavior to a type.
