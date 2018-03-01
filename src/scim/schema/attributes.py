@@ -54,11 +54,11 @@ class Declarative(type):
             schemas.append(schema)
 
         # Continue initialization.
-        return super().__new__(cls, name, bases, attrs)
+        return super(Declarative, cls).__new__(cls, name, bases, attrs)
 
 
 @six.add_metaclass(Declarative)
-class Base():
+class Base(object):
     """
     Represents an attribute wrapper; intended to tie a name, constraints,
     and behavior to a type.
@@ -136,7 +136,7 @@ class Singular(Base):
         self.required = required
 
         # Continue initialization.
-        super().__init__(*args, **kwargs)
+        super(Singular, self).__init__(*args, **kwargs)
 
     def __get__(self, instance, owner=None):
         if instance is not None:
@@ -153,7 +153,7 @@ class Singular(Base):
             return
 
         # Continue along with normal behavior.
-        super().__set__(instance, value)
+        super(Singular, self).__set__(instance, value)
 
     def __delete__(self, instance):
         if instance is not None:
@@ -163,7 +163,7 @@ class Singular(Base):
                 return
 
         # Continue along with normal behavior.
-        super().__delete__(instance)
+        super(Singular, self).__delete__(instance)
 
     def serialize(self, obj):
         if self.name in obj._state:
@@ -186,7 +186,7 @@ class Complex(Base):
         self.name = name
 
         # Continue initialization.
-        super().__init__(*args, **kwargs)
+        super(Complex, self).__init__(*args, **kwargs)
 
     def __get__(self, instance, owner=None):
         if instance is not None:
@@ -206,7 +206,7 @@ class Complex(Base):
             raise AttributeError("can't set attribute")
 
         # Continue along with normal behavior.
-        super().__set__(instance, value)
+        super(Complex, self).__set__(instance, value)
 
     def __delete__(self, instance):
         if instance is not None:
@@ -214,7 +214,7 @@ class Complex(Base):
             raise AttributeError("can't delete attribute")
 
         # Continue along with normal behavior.
-        super().__delete__(instance)
+        super(Complex, self).__delete__(instance)
 
     def serialize(self, obj):
         # Grab the data object to serialize.
@@ -238,7 +238,7 @@ class Complex(Base):
 
     def deserialize(self, text):
         if text is not None:
-            return super().deserialize(text, instance=self.type())
+            return super(Complex, self).deserialize(text, instance=self.type())
 
 
 class BaseList(collections.MutableSequence):
@@ -282,7 +282,7 @@ class List(Complex):
 
     def __init__(self, type_, convert=lambda x: x, *args, **kwargs):
         # Continue initialization.
-        super().__init__(None, *args, **kwargs)
+        super(List, self).__init__(None, *args, **kwargs)
 
         #! The underyling type of the attribute.
         self.type = lambda: BaseList(type_, self.name, convert)
@@ -379,7 +379,7 @@ class MultiValue(List):
             'Value', (BaseMultiValue,), {'value': type_})
 
         # Continue initialization.
-        super().__init__(type_, convert=self._convert, *args, **kwargs)
+        super(MultiValue, self).__init__(type_, convert=self._convert, *args, **kwargs)
 
     def serialize(self, obj):
         # Grab the data object to serialize.

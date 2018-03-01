@@ -3,7 +3,7 @@ from datetime import datetime
 from scim import schema
 
 
-class TestUser:
+class TestUser(object):
 
     def test_serialize(self):
         u = schema.User()
